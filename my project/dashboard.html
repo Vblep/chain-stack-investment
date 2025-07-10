@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chain Stack Investment Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0; padding: 0;
+      background-color: white;
+      color: #333;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .dark-mode {
+      background-color: #121212;
+      color: #eee;
+    }
+    header {
+      background: url('your-hero-bg.jpg') center/cover no-repeat;
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+    header img {
+      height: 80px;
+      vertical-align: middle;
+    }
+    header h1 {
+      font-size: 2rem;
+      margin: 0.5rem 0;
+    }
+    header p {
+      font-style: italic;
+      margin: 0;
+    }
+    #themeToggle {
+      margin: 1rem auto;
+      display: block;
+      padding: 0.5rem 1rem;
+      background: none;
+      border: 2px solid #4A90E2;
+      border-radius: 5px;
+      cursor: pointer;
+      color: #4A90E2;
+    }
+    .dark-mode #themeToggle {
+      color: #eee;
+      border-color: #eee;
+    }
+    .top-actions {
+      text-align: center;
+      margin: 1rem;
+    }
+    .top-actions button {
+      margin: 0.3rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      background: #4A90E2;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .top-actions button:hover {
+      background: #357ABD;
+    }
+    .cards, .charts, .section {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .card, .chart-container, .box {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      flex: 1 1 250px;
+      padding: 1rem;
+    }
+    .dark-mode .card, .dark-mode .chart-container, .dark-mode .box {
+      background: #1e1e1e;
+    }
+    .card h3, .chart-container h3 {
+      margin: 0 0 0.5rem;
+      text-align: center;
+    }
+    .counter {
+      font-size: 2rem;
+      text-align: center;
+    }
+    .referral-box {
+      text-align: center;
+      padding: 1rem;
+    }
+    .referral-link {
+      display: block;
+      margin: 0.5rem auto;
+      word-break: break-all;
+      color: #4A90E2;
+      text-decoration: underline;
+    }
+    .social-icons {
+      text-align: center;
+      margin: 1rem;
+    }
+    .social-icons a {
+      margin: 0 0.5rem;
+      color: #4A90E2;
+      font-size: 1.5rem;
+      text-decoration: none;
+    }
+    .dark-mode .social-icons a {
+      color: #eee;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: #4A90E2;
+      color: white;
+      margin-top: 1rem;
+    }
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.5rem; }
+      .cards, .charts, .section { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="images/logo.svg"---- alt="Logo.svg">
+    <h1>Chain Stack Investment</h1>
+    <p>Smart, Secure & Profitable Investing</p>
+  </header>
+
+  <button id="themeToggle">Dark Mode</button>
+
+  <div class="top-actions">
+    <button onclick="viewProfile()">My Profile</button>
+    <button onclick="copyReferral()">Copy Referral Link</button>
+    <button onclick="shareReferral()">Share</button>
+  </div>
+
+  <section class="referral-box">
+    <p>Your Referral Link:</p>
+    <span id="refLink" class="referral-link">https://chainstack.com/ref/ABC123</span>
+  </section>
+
+  <section class="cards">
+    <div class="card">
+      <h3>Total Earnings</h3>
+      <div class="counter" id="earningsCounter">$0</div>
+    </div>
+    <div class="card">
+      <h3>Total Referrals</h3>
+      <div class="counter" id="referralsCounter">0</div>
+    </div>
+    <div class="card">
+      <h3>Available Balance</h3>
+      <div class="counter" id="balanceCounter">$0</div>
+    </div>
+  </section>
+
+  <section class="charts">
+    <div class="chart-container">
+      <h3>Monthly Earnings</h3>
+      <canvas id="earningsChart"></canvas>
+    </div>
+    <div class="chart-container">
+      <h3>Referral Growth</h3>
+      <canvas id="referralsChart"></canvas>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>About Us</h2>
+    <div class="box">
+      <p>We provide innovative investment solutions tailored to your needs. With cutting-edge security and real-time analytics, Chain Stack helps you grow your wealth safely and effectively.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Our Services</h2>
+    <div class="box">
+      <ul>
+        <li>Automated Crypto Trading</li>
+        <li>Real-time Analytics Dashboard</li>
+        <li>Referral Program</li>
+        <li>24/7 Support</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Testimonials</h2>
+    <div class="box">
+      <p>"Fantastic platform! My earnings have grown steadily." - Alex</p>
+      <p>"Love the simple dashboard and dark mode option!" - Taylor</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Contact Us</h2>
+    <div class="box">
+      <p>Email: support@chainstack.com</p>
+      <p>Phone: +234 9119012234</p>
+    </div>
+  </section>
+
+  <div class="social-icons">
+    <a href="#"><i class="fa fa-facebook"></i>🔵</a>
+    <a href="#"><i class="fa fa-twitter"></i>🐦</a>
+    <a href="#"><i class="fa fa-instagram"></i>📸</a>
+    <a href="#"><i class="fa fa-linkedin"></i>💼</a>
+  </div>
+
+  <footer>
+    &copy; 2025 Chain Stack Investment. All rights reserved.
+  </footer>
+
+  <script>
+    // Dark mode toggle
+    document.getElementById('themeToggle').addEventListener('click', () =>
+      document.body.classList.toggle('dark-mode'));
+
+    // Animated counters
+    function animateValue(id, start, end, duration) {
+      let range = end - start;
+      let current = start;
+      let increment = end > start ? 1 : -1;
+      let stepTime = Math.abs(Math.floor(duration / range));
+      let obj = document.getElementById(id);
+      let timer = setInterval(function() {
+        current += increment;
+        obj.textContent = id.includes('Counter') && id !== 'referralsCounter' ? "$" + current : current;
+        if (current == end) clearInterval(timer);
+      }, stepTime);
+    }
+    animateValue("earningsCounter", 0, 12345, 2000);
+    animateValue("referralsCounter", 0, 27, 2000);
+    animateValue("balanceCounter", 0, 8765, 2000);
+
+    // Charts
+    new Chart(document.getElementById('earningsChart'), {
+      type: 'line',
+      data: {
+        labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+        datasets: [{
+          label: 'Earnings',
+          data: [500, 700, 400, 900, 1200, 800],
+          backgroundColor: 'rgba(74,144,226,0.2)',
+          borderColor: 'rgba(74,144,226,1)',
+          borderWidth: 2,
+          tension:0.4,
+          fill:false
+        }]
+      },
+      options: { responsive:true, scales:{ y:{ beginAtZero:true } } }
+    });
+    new Chart(document.getElementById('referralsChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+        datasets: [{
+          label: 'Referrals',
+          data: [2,3,5,7,4,6],
+          backgroundColor:'rgba(74,144,226,0.8)',
+          borderColor:'rgba(74,144,226,1)',
+          borderWidth:1
+        }]
+      },
+      options:{ responsive:true, scales:{ y:{ beginAtZero:true } } }
+    });
+
+    // Profile button
+    function viewProfile() {
+      alert("Redirect to profile page (link to profile.html)");
+    }
+
+    // Copy referral link
+    function copyReferral() {
+      let text = document.getElementById("refLink").textContent;
+      navigator.clipboard.writeText(text).then(() =>
+        alert("Referral link copied!")
+      );
+    }
+
+    // Share referral link
+    function shareReferral() {
+      let text = document.getElementById("refLink").textContent;
+      if (navigator.share) {
+        navigator.share({
+          title: "Join Chain Stack Investment!",
+          text: "Sign up using my referral link:",
+          url: text
+        });
+      } else {
+        alert("Sharing not supported on this browser. Copy the link instead!");
+      }
+    }
+  </script>
+</body>
+</html>

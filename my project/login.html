@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Login - CHAIN STACK INVESTMENT</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Loader -->
+<div id="loader">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+    <circle cx="20" cy="32" r="12" stroke="#007BFF" stroke-width="4" fill="none">
+      <animate attributeName="stroke-dasharray"
+               values="0,75.4;75.4,0;0,75.4"
+               dur="2s"
+               repeatCount="indefinite" />
+      <animate attributeName="stroke"
+               values="#007BFF;#00FFAA;#FF0077;#007BFF"
+               dur="4s"
+               repeatCount="indefinite" />
+    </circle>
+    <circle cx="40" cy="32" r="12" stroke="#007BFF" stroke-width="4" fill="none">
+      <animate attributeName="stroke-dasharray"
+               values="0,75.4;75.4,0;0,75.4"
+               dur="2s"
+               begin="1s"
+               repeatCount="indefinite" />
+      <animate attributeName="stroke"
+               values="#007BFF;#00FFAA;#FF0077;#007BFF"
+               dur="4s"
+               repeatCount="indefinite" />
+    </circle>
+  </svg>
+</div>
+  <h1>Login</h1>
+  <form id="loginForm">
+    <input type="email" id="loginEmail" placeholder="Email" required><br>
+    <input type="password" id="loginPassword" placeholder="Password" required><br>
+    <button type="submit">Login</button>
+  </form>
+  <p>Don’t have an account? <a href="register.html">Register here</a></p>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js"></script>
+  <script>
+    const firebaseConfig = // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+ {
+  apiKey: "AIzaSyA_iYXe5LH69XuQfj4ZZ1zzOTWN0Myai2s",
+  authDomain: "chain-stack-investment.firebaseapp.com",
+  projectId: "chain-stack-investment",
+  storageBucket: "chain-stack-investment.firebasestorage.app",
+  messagingSenderId: "1059684053871",
+  appId: "1:1059684053871:web:b55b3ff4feeb5c664dee9a",
+  measurementId: "G-R2MERY240V"
+};
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      auth.signInWithEmailAndPassword(email, password)
+      .then(() => {
+        window.location.href = 'dashboard.html';
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+    });
+  </script>
+</body>
+</html>

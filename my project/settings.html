@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings - CHAIN STACK INVESTMENT</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  body { font-family:'Poppins', sans-serif; background:#121212; color:#fff; padding:20px; }
+  h2 { color:#ff5722; }
+  label { display:block; margin-top:15px; }
+  select, input[type="text"], input[type="password"] { width:100%; padding:10px; margin-top:5px; border-radius:5px; border:none; }
+  button { margin-top:20px; background:#ff5722; color:#fff; padding:10px 20px; border:none; border-radius:5px; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<h2>Settings</h2>
+
+<label>Language
+<select id="languageSelect">
+  <option value="en">English</option>
+  <option value="ig">Igbo</option>
+  <option value="yo">Yoruba</option>
+  <option value="ha">Hausa</option>
+</select>
+</label>
+
+<label>Withdrawal Method
+<select id="withdrawMethod">
+  <option>Nigerian Banks</option>
+  <option>US Bank</option>
+  <option>PayPal</option>
+  <option>Bitcoin</option>
+</select>
+</label>
+
+<label>Edit Profile
+<input type="text" id="displayName" placeholder="Display Name">
+<input type="text" id="phoneNumber" placeholder="Phone Number">
+</label>
+
+<label>Change Password
+<input type="password" id="newPassword" placeholder="New Password">
+</label>
+
+<button onclick="saveSettings()">Save Settings</button>
+
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

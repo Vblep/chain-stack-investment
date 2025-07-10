@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Roboto', sans-serif; margin:0; padding:0; background:white; color:#333; }
+  .profile-container { text-align:center; padding:2rem; }
+  .profile-container img { width:120px; height:120px; border-radius:50%; object-fit:cover; }
+  .profile-container h2 { margin:0.5rem 0; }
+  .stats { display:flex; justify-content:center; gap:1rem; margin-top:1rem; }
+  .stat { background:#f5f5f5; padding:1rem; border-radius:8px; }
+  button { margin-top:1rem; padding:0.5rem 1rem; background:#4A90E2; color:white; border:none; border-radius:5px; cursor:pointer; }
+</style>
+</head>
+<body>
+<div id="header"></div>
+
+<div class="profile-container">
+  <img id="userPhoto" src="default-avatar.jpg" alt="Profile Picture">
+  <h2 id="userName">Loading...</h2>
+  <p id="userEmail">Loading...</p>
+  <button onclick="editProfile()">Edit Profile</button>
+  <div class="stats">
+    <div class="stat">
+      <h3>Total Earnings</h3>
+      <p id="profileEarnings">$0</p>
+    </div>
+    <div class="stat">
+      <h3>Referrals</h3>
+      <p id="profileReferrals">0</p>
+    </div>
+  </div>
+</div>
+
+<div id="footer"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+<script>
+// Firebase config here
+const firebaseConfig = { /* your config */ };
+const app = firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// Load header & footer
+fetch('header.html').then(r=>r.text()).then(html=>document.getElementById('header').innerHTML=html);
+fetch('footer.html').then(r=>r.text()).then(html=>document.getElementById('footer').innerHTML=html);
+
+// Load user profile
+auth.onAuthStateChanged(user=>{
+ if(user){
+  db.collection('users').doc(user.uid).get().then(doc=>{
+   if(doc.exists){
+    const data=doc.data();
+    document.getElementById('userName').textContent=data.name || "No name";
+    document.getElementById('userEmail').textContent=user.email;
+    document.getElementById('userPhoto').src=data.photo || "default-avatar.jpg";
+    document.getElementById('profileEarnings').textContent = "$"+(data.earnings||0);
+    document.getElementById('profileReferrals').textContent = data.referrals||0;
+   }
+  });
+ }
+});
+
+function editProfile(){ alert("Redirect to edit profile page"); }
+</script>
+</body>
+</html>

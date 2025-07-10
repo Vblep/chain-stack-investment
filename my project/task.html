@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daily Tasks - CHAIN STACK INVESTMENT</title>
+<style>
+  body { margin:0; font-family: Arial; background:#121212; color:#fff; }
+  header { text-align:center; padding:20px; background:linear-gradient(90deg,#4CAF50,#1e88e5); }
+  h1 { margin:0; }
+  .task-list { max-width:700px; margin:20px auto; }
+  .task { background:#1f1f1f; margin:10px 0; padding:15px; border-radius:8px; position:relative; }
+  .reward { position:absolute; right:15px; top:15px; background:#4CAF50; padding:4px 8px; border-radius:4px; }
+  button { margin-top:10px; background:#2196f3; color:#fff; border:none; padding:8px 12px; border-radius:5px; cursor:pointer; }
+  nav { text-align:center; margin-top:20px; }
+  nav a { color:#4CAF50; margin:0 8px; text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📋 Daily Tasks</h1>
+  <p>Complete tasks & earn rewards!</p>
+</header>
+
+<div class="task-list" id="taskList">
+  <div class="task fade-in">
+    <h3>Loading tasks...</h3>
+  </div>
+</div>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="tasks.html">Tasks</a>
+  <a href="earnings.html">Earnings</a>
+</nav>
+
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js"></script>
+<script src="script.js"></script>
+<script>
+  const app = firebase.initializeApp({ /* your config */ });
+  const db = firebase.firestore();
+
+  const userId = "currentUserId"; // Replace with actual auth user id
+
+  function loadTasks() {
+    db.collection("tasks").orderBy("date","desc").get().then(snapshot => {
+      const list = document.getElementById("taskList");
+      list.innerHTML = '';
+      snapshot.forEach(doc => {
+        const task = doc.data();
+        const el = document.createElement('div');
+        el.className = 'task fade-in';
+        el.innerHTML = `
+          <h3>${task.title}</h3>
+          <p>${task.description}</p>
+          <div class="reward">+$${task.reward.toFixed(2)}</div>
+          <button onclick="completeTask('${doc.id}', ${task.reward})">Mark as Done</button>`;
+        list.appendChild(el);
+      });
+    });
+  }
+
+  function completeTask(taskId, reward) {
+    // Add to user_tasks & update user's earning (mock)
+    db.collection("user_tasks").doc(userId+'_'+taskId).set({
+      userId, taskId, completed:true, reward
+    }).then(()=>{
+      alert("✅ Task completed! $" + reward + " added to your earnings.");
+      // Optionally: update user's earnings in db here
+    });
+  }
+
+  loadTasks();
+</script>
+</body>
+</html>

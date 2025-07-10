@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Account - Chain Stack Investment</title>
+</head>
+<body>
+  <h1>Create Your Account</h1>
+  <form onsubmit="registerUser(event)">
+    <input type="text" id="fullName" placeholder="Full Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button type="submit">Sign Up</button>
+  </form>
+  <p>Already have an account? <a href="login.html">Login here</a></p>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js"></script>
+
+  <script>
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyA_iYXe5LH69XuQfj4ZZ1zzOTWN0Myai2s",
+      authDomain: "chain-stack-investment.firebaseapp.com",
+      projectId: "chain-stack-investment",
+      storageBucket: "chain-stack-investment.firebasestorage.app",
+      messagingSenderId: "1059684053871",
+      appId: "1:1059684053871:web:b55b3ff4feeb5c664dee9a",
+      measurementId: "G-R2MERY240V"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    function registerUser(event) {
+      event.preventDefault(); // stop form from reloading page
+
+      var fullName = document.getElementById('fullName').value;
+      var email = document.getElementById('email').value;
+      var password = document.getElementById('password').value;
+
+      auth.createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        var user = userCredential.user;
+        // create Firestore document for user with timestamp:
+        return db.collection("users").doc(user.uid).set({
+          fullName: fullName,
+          totalEarnings: 0,
+          availableBalance: 0,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      })
+      .then(() => {
+        alert("Registration successful!");
+        window.location.href = "dashboard.html";
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+    }
+  </script>
+</body>
+</html>

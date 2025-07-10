@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard - CHAIN STACK INVESTMENT</title>
+<link rel="stylesheet" href="styles.css"> <!-- Link your global CSS -->
+<style>
+  body { font-family: 'Poppins', sans-serif; color:#fff; background:#121212; margin:0; }
+  header, footer { background:#1a1a1a; padding:15px; text-align:center; }
+  nav { display:flex; justify-content: center; margin: 20px 0; }
+  nav button { margin:0 10px; padding:10px 20px; background:#333; color:#fff; border:none; cursor:pointer; }
+  nav button.active { background:#ff5722; }
+  section { display:none; padding:20px; }
+  section.active { display:block; }
+</style>
+</head>
+<body>
+
+<header><h2>Admin Dashboard</h2></header>
+
+<nav>
+  <button onclick="showTab('users')">Users</button>
+  <button onclick="showTab('addMod')">Add Moderator</button>
+  <button onclick="showTab('tasks')">Tasks</button>
+  <button onclick="showTab('siteSettings')">Site Settings</button>
+</nav>
+
+<section id="users">
+  <h3>All Users</h3>
+  <div id="userList">Loading users...</div>
+</section>
+
+<section id="addMod">
+  <h3>Add/Remove Moderator</h3>
+  <input type="text" id="searchUser" placeholder="Search user by name/email" oninput="searchUsers()" />
+  <div id="modUserList">Loading users...</div>
+</section>
+
+<section id="tasks">
+  <h3>All Tasks</h3>
+  <div id="taskList">Loading tasks...</div>
+  <a href="add-task.html" style="color:#ff5722;">+ Add New Task</a>
+</section>
+
+<section id="siteSettings">
+  <h3>Site Settings</h3>
+  <p>Feature coming soon: maintenance mode, banners, announcements...</p>
+</section>
+
+<footer>&copy; 2025 CHAIN STACK INVESTMENT</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+<script src="script.js"></script>
+<script>
+function showTab(tab) {
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(tab).classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

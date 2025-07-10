@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Earnings - CHAIN STACK INVESTMENT</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+  header {
+    padding: 20px;
+    font-size: 1.8em;
+    font-weight: bold;
+    background: rgba(0,0,0,0.2);
+  }
+  nav {
+    margin: 20px 0;
+  }
+  nav a {
+    text-decoration: none;
+    color: #00c6ff;
+    margin: 0 10px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 5px;
+    transition: background 0.3s;
+  }
+  nav a:hover {
+    background: rgba(255,255,255,0.3);
+  }
+  .stats {
+    margin: 30px auto;
+    max-width: 500px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .stats h2 { margin-bottom: 10px; }
+  .amount {
+    font-size: 2.5em;
+    color: #00ffcc;
+  }
+  .progress-container {
+    margin-top: 20px;
+    text-align: left;
+  }
+  .progress-bar {
+    height: 20px;
+    background: #00ffcc;
+    width: 0%;
+    border-radius: 10px;
+    transition: width 1s ease-in-out;
+  }
+  .taskbar {
+    margin: 30px auto;
+    max-width: 500px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: left;
+  }
+  .taskbar h3 { margin-bottom: 10px; }
+  .task-item {
+    padding: 10px;
+    margin-bottom: 8px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .task-item button {
+    background: #00c6ff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  .task-item .done {
+    background: #4CAF50 !important;
+    cursor: default;
+  }
+  #addTaskFab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #00c6ff;
+    color: white;
+    font-size: 24px;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    display: none;
+  }
+</style>
+</head>
+<body>
+<header>💰 My Earnings</header>
+
+<nav>
+  <a href="index.html">🏠 Home</a>
+  <a href="tasks.html">📋 View All Tasks</a>
+  <a href="earnings.html">💰 Earnings</a>
+</nav>
+
+<section class="stats">
+  <h2>Total Earnings</h2>
+  <div class="amount" id="earningsAmount">₦0</div>
+  <div class="progress-container">
+    <div style="font-size: 0.9em; margin-bottom: 5px;">Progress towards ₦100,000 goal:</div>
+    <div style="background: rgba(255,255,255,0.3); border-radius: 10px; overflow: hidden;">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </div>
+</section>
+
+<section class="taskbar">
+  <h3>📌 Today's Tasks</h3>
+  <div id="taskList">Loading tasks...</div>
+</section>
+
+<!-- Floating add task button (for admin) -->
+<button id="addTaskFab" onclick="window.location.href='add-task.html'">+</button>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js"></script>
+
+<script>
+  const firebaseConfig = {
+      apiKey: "AIzaSyA_iYXe5LH69XuQfj4ZZ1zzOTWN0Myai2s",
+      authDomain: "chain-stack-investment.firebaseapp.com",
+      projectId: "chain-stack-investment",
+      storageBucket: "chain-stack-investment.firebasestorage.app",
+      messagingSenderId: "1059684053871",
+      appId: "1:1059684053871:web:b55b3ff4feeb5c664dee9a",
+      measurementId: "G-R2MERY240V"
+    };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+
+  let goal = 100000;
+
+  auth.onAuthStateChanged(async user => {
+    if (user) {
+      const userEmail = user.email;
+      const userId = user.uid;
+
+      const adminEmails = ["ebuvick0@gmail.com", "admin@example.com"];
+      if (adminEmails.includes(userEmail)) {
+        document.getElementById("addTaskBtn").style.display = "inline-block";
+        document.getElementById("addTaskFab").style.display = "block";
+      } else {
+        document.getElementById("addTaskBtn").style.display = "none";
+      }
+
+      // Load earnings
+      const userDoc = await db.collection('users').doc(userId).get();
+      let earnings = userDoc.exists ? userDoc.data().earnings || 0 : 0;
+      animateEarnings(earnings);
+
+      // Load completed tasks
+      const completedSnapshot = await db.collection('users').doc(userId).collection('completedTasks').get();
+      const completedTaskIds = completedSnapshot.docs.map(doc => doc.id);
+
+      // Load today's tasks
+      const tasksSnapshot = await db.collection('tasks').get(); // optional: filter today's date
+      const taskList = document.getElementById("taskList");
+      taskList.innerHTML = "";
+
+      tasksSnapshot.forEach(doc => {
+        const task = doc.data();
+        const isCompleted = completedTaskIds.includes(doc.id);
+        const div = document.createElement('div');
+        div.className = 'task-item';
+        div.innerHTML = `
+          <span>${task.title} - ₦${task.reward}</span>
+          <button class="${isCompleted ? 'done' : ''}" ${isCompleted ? 'disabled' : ''} onclick="${!isCompleted ? `markAsDone('${doc.id}', ${task.reward})` : ''}">
+            ${isCompleted ? '✔ Completed' : 'Mark as Done'}
+          </button>`;
+        taskList.appendChild(div);
+      });
+    } else {
+      location.href = 'login.html';
+    }
+  });
+
+  function animateEarnings(earnings) {
+    const amountElem = document.getElementById("earningsAmount");
+    const progressBar = document.getElementById("progressBar");
+    let current = 0;
+    const step = Math.ceil(earnings / 50);
+    const interval = setInterval(() => {
+      current += step;
+      if (current >= earnings) {
+        current = earnings;
+        clearInterval(interval);
+      }
+      amountElem.textContent = "₦" + current.toLocaleString();
+      let progress = Math.min((current / goal) * 100, 100);
+      progressBar.style.width = progress + "%";
+    }, 20);
+  }
+
+  async function markAsDone(taskId, reward) {
+    const user = auth.currentUser;
+    if (!user) return alert('Please log in');
+    const userRef = db.collection('users').doc(user.uid);
+    const completedRef = userRef.collection('completedTasks').doc(taskId);
+
+    const doc = await completedRef.get();
+    if (doc.exists) {
+      alert('Task already completed!');
+      return;
+    }
+
+    await db.runTransaction(async (t) => {
+      const userDoc = await t.get(userRef);
+      let earnings = userDoc.exists ? userDoc.data().earnings || 0 : 0;
+      earnings += reward;
+      t.update(userRef, { earnings });
+      t.set(completedRef, { completedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    });
+
+    alert('Task marked as done! Earnings updated.');
+    location.reload();
+  }
+</script>
+</body>
+</html>

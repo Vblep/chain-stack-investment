@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHAIN STACK INVESTMENT</title>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+    overflow-x: hidden;
+  }
+
+  /* Animated gradient background */
+  body::before {
+    content: "";
+    position: fixed;
+    top:0; left:0;
+    width: 100%; height:100%;
+    background: linear-gradient(-45deg, #1a2a6c, #b21f1f, #fdbb2d, #0099f7);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    z-index: -2;
+  }
+
+  @keyframes gradientBG {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+  }
+
+  /* Hero background image with parallax */
+  .hero {
+    background: url('images/hero-bg.jpg') no-repeat center center / cover;
+    background-attachment: fixed;
+    padding: 120px 20px;
+    text-align: center;
+    position: relative;
+    z-index: -1;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: rgba(0, 0, 0, 0.5);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+  }
+
+  .logo-area img {
+    height: 50px;
+    margin-right: 10px;
+  }
+
+  .logo-area span {
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: block;
+    font-weight: 500;
+  }
+
+  nav ul li a:hover {
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+  }
+
+  .menu-toggle {
+    display: none;
+    font-size: 28px;
+    cursor: pointer;
+  }
+
+  .cta-button {
+    background: #ff5722;
+    color: #fff;
+    padding: 12px 30px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: 20px;
+    display: inline-block;
+  }
+
+  .hero h1 {
+    font-size: 40px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+  }
+
+  .hero p {
+    font-size: 20px;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+  }
+
+  footer {
+    text-align: center;
+    padding: 15px;
+    background: rgba(0,0,0,0.4);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .menu-toggle {
+      display: block;
+    }
+    nav ul {
+      display: none;
+      flex-direction: column;
+      background: rgba(0,0,0,0.8);
+      position: absolute;
+      top: 60px; right: 20px;
+      border-radius: 5px;
+    }
+    nav ul.show {
+      display: flex;
+    }
+    nav ul li a {
+      padding: 12px 20px;
+    }
+  }
+</style>
+<!-- Firebase App (include only if not already included) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
+<script>
+  // Your Firebase config
+  const firebaseConfig = {
+      apiKey: "AIzaSyA_iYXe5LH69XuQfj4ZZ1zzOTWN0Myai2s",
+      authDomain: "chain-stack-investment.firebaseapp.com",
+      projectId: "chain-stack-investment",
+      storageBucket: "chain-stack-investment.firebasestorage.app",
+      messagingSenderId: "1059684053871",
+      appId: "1:1059684053871:web:b55b3ff4feeb5c664dee9a",
+      measurementId: "G-R2MERY240V"
+    };
+  firebase.initializeApp(firebaseConfig);
+</script>
+</head>
+<body>
+
+<header>
+  <div class="logo-area">
+    <img src="images/logo.svg" alt="CHAIN STACK LOGO">
+    <span>CHAIN STACK INVESTMENT</span>
+  </div>
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+  <nav>
+    <ul id="menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="how-it-works.html">How It Works</a></li>
+      <li><a href="promotions.html">Promotions</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="earnings.html">My Earnings</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="login.html">Login</a></li>
+      <li><a href="register.html">Register</a></li>
+      <!-- Admin Dashboard button (only for ebuvick0@gmail.com) -->
+      <li id="adminLink" style="display:none;"><a href="admin.html">Admin Dashboard</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>Welcome to CHAIN STACK INVESTMENT</h1>
+    <p>Your trusted international affiliate marketing platform.</p>
+    <a href="register.html" class="cta-button">Get Started</a>
+  </section>
+</main>
+
+<footer>
+  &copy; 2025 CHAIN STACK INVESTMENT. All rights reserved.
+</footer>
+
+<script>
+function toggleMenu() {
+  document.getElementById('menu').classList.toggle('show');
+}
+
+// Show admin link only for ebuvick0@gmail.com
+firebase.auth().onAuthStateChanged((user) => {
+  if (user && user.email === "ebuvick0@gmail.com") {
+    document.getElementById('adminLink').style.display = "block";
+  }
+});
+</script>
+<script src="script.js"></script>
+</body>
+</html>

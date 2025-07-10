@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Moderator - CHAIN STACK</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin:0;
+    font-family:'Poppins', sans-serif;
+    background: linear-gradient(-45deg, #1a2a6c, #b21f1f, #fdbb2d, #0099f7);
+    background-size:400% 400%;
+    animation: gradientBG 15s ease infinite;
+    color:#fff;
+    padding:20px;
+  }
+  @keyframes gradientBG {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+  }
+  h1 {text-align:center; margin-bottom:20px;}
+  #search {
+    width:100%;
+    padding:10px;
+    margin-bottom:20px;
+    border-radius:4px;
+    border:none;
+    font-size:16px;
+  }
+  .user-list {display:flex; flex-wrap:wrap; justify-content:center;}
+  .user-card {
+    background:rgba(0,0,0,0.4);
+    margin:10px;
+    padding:10px;
+    border-radius:6px;
+    text-align:center;
+    width:150px;
+  }
+  .user-card img {
+    width:60px; height:60px;
+    border-radius:50%;
+    margin-bottom:8px;
+    object-fit:cover;
+  }
+  .btn {
+    margin-top:5px;
+    background:#ff5722;
+    color:#fff;
+    padding:6px 12px;
+    border:none;
+    border-radius:4px;
+    font-size:14px;
+    cursor:pointer;
+  }
+</style>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+</head>
+<body>
+  <h1>Add Moderator</h1>
+  <input type="text" id="search" placeholder="Search users by name..." onkeyup="filterUsers()">
+  <div class="user-list" id="userList"></div>
+
+<script>
+let allUsers = [];
+
+firebase.auth().onAuthStateChanged((user)=>{
+  if(user && user.email === "ebuvick0@gmail.com") {
+    db.collection("users").get().then(snapshot=>{
+      snapshot.forEach(doc=>{
+        const data = doc.data();
+        allUsers.push({id:doc.id, ...data});
+      });
+      renderUsers(allUsers);
+    });
+  } else {
+    alert("Access denied");
+    window.location.href = "index.html";
+  }
+});
+
+function renderUsers(users){
+  const container = document.getElementById('userList');
+  container.innerHTML='';
+  users.forEach(u=>{
+    container.innerHTML+=`
+      <div class="user-card">
+        <img src="${u.photoURL || 'images/default-profile.png'}" alt="profile">
+        <div>${u.username || 'No name'}</div>
+        <button class="btn" onclick="makeModerator('${u.id}')">Make Moderator</button>
+      </div>`;
+  });
+}
+
+function filterUsers(){
+  const term = document.getElementById('search').value.toLowerCase();
+  const filtered = allUsers.filter(u=>(u.username||'').toLowerCase().includes(term));
+  renderUsers(filtered);
+}
+
+function makeModerator(uid){
+  db.collection("users").doc(uid).update({role:"moderator"})
+    .then(()=>alert("User promoted to moderator"))
+    .catch(err=>alert("Error:"+err));
+}
+</script>
+</body>
+</html>
